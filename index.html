@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhavya Jain | Developer</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --whatsapp: #25D366;
+            --dark: #2d3436;
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; background-color: #f8f9fa; margin: 0; 
+        }
+        .card { 
+            background: white; padding: 2.5rem; border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; 
+            width: 90%; max-width: 350px;
+        }
+        .profile-img {
+            width: 80px; height: 80px; background: var(--primary);
+            color: white; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: bold; margin: 0 auto 1rem;
+        }
+        h1 { color: var(--dark); margin: 0; font-size: 1.5rem; }
+        p { color: #636e72; margin: 0.5rem 0 1.5rem; font-size: 0.9rem; }
+        
+        .btn { 
+            display: flex; align-items: center; justify-content: center;
+            padding: 12px; margin-bottom: 10px; border-radius: 10px;
+            text-decoration: none; font-weight: 600; transition: 0.2s;
+            cursor: pointer; border: none; width: 100%; font-size: 1rem;
+        }
+        .btn-save { background: var(--primary); color: white; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="profile-img">BJ</div>
+        <h1>Bhavya Jain</h1>
+        <p>Software Developer Specialist</p>
+
+        <button class="btn btn-save" onclick="saveContact()">💾 Save Contact</button>
+
+        <a href="https://wa.me/917454990121" class="btn btn-whatsapp" target="_blank">
+            💬 WhatsApp Me
+        </a>
+    </div>
+
+    <script>
+        function saveContact() {
+            const vcardData = `BEGIN:VCARD
+VERSION:3.0
+FN:Bhavya Jain Developer
+N:Jain;Bhavya;;Developer;
+ORG:Developer
+TEL;TYPE=CELL:+917454990121
+EMAIL;TYPE=INTERNET:threegamerbpiz@gmail.com
+END:VCARD`;
+
+            // Check if mobile sharing is supported (for native contact adding)
+            if (navigator.share) {
+                const file = new File([vcardData], "BhavyaJain.vcf", { type: "text/vcard" });
+                navigator.share({
+                    files: [file],
+                    title: 'Bhavya Jain Developer',
+                    text: 'Save my contact info'
+                }).catch(console.error);
+            } else {
+                // Fallback: Download the file
+                const blob = new Blob([vcardData], { type: "text/vcard" });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'BhavyaJain.vcf';
+                a.click();
+            }
+        }
+    </script>
+</body>
+</html>
