@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bhavya Jain | Developer</title>
     <style>
-        /* CSS Variables for Dynamic Light/Dark Mode */
+        /* CSS Variables for Dynamic Themes */
         :root {
             --bg-color: #e2e8f0;
             --text-main: #1e293b;
@@ -16,20 +16,21 @@
             --blob-2: #10b981;
             --btn-shadow: rgba(0, 0, 0, 0.1);
             --btn-highlight: rgba(255, 255, 255, 0.8);
+            --cursor-color: #3b82f6;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #0f172a;
-                --text-main: #f8fafc;
-                --text-sub: #94a3b8;
-                --glass-bg: rgba(30, 41, 59, 0.4);
-                --glass-border: rgba(255, 255, 255, 0.1);
-                --blob-1: #6366f1;
-                --blob-2: #8b5cf6;
-                --btn-shadow: rgba(0, 0, 0, 0.4);
-                --btn-highlight: rgba(255, 255, 255, 0.1);
-            }
+        /* Dark Theme Variables */
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --glass-bg: rgba(30, 41, 59, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --blob-1: #6366f1;
+            --blob-2: #8b5cf6;
+            --btn-shadow: rgba(0, 0, 0, 0.4);
+            --btn-highlight: rgba(255, 255, 255, 0.1);
+            --cursor-color: #8b5cf6;
         }
 
         * {
@@ -37,6 +38,14 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            /* Hide default cursor on desktop */
+            cursor: none; 
+        }
+
+        /* Allow default cursor on elements that need it or on touch devices */
+        @media (pointer: coarse) {
+            * { cursor: auto !important; }
+            .custom-cursor { display: none !important; }
         }
 
         body {
@@ -48,10 +57,47 @@
             overflow: hidden;
             position: relative;
             color: var(--text-main);
-            transition: background-color 0.5s ease;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        /* Liquid Animated Background Blobs */
+        /* Custom Cursor styling */
+        .custom-cursor {
+            position: fixed;
+            top: 0; left: 0;
+            width: 24px; height: 24px;
+            border: 2px solid var(--cursor-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            box-shadow: 0 0 10px var(--cursor-color);
+        }
+        .custom-cursor.hovering {
+            width: 40px; height: 40px;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Torch (Theme Toggle) Button */
+        .theme-toggle {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 45px; height: 45px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.2rem;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .theme-toggle:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        /* Liquid Animated Background */
         .blob {
             position: absolute;
             filter: blur(60px);
@@ -60,19 +106,15 @@
             animation: float 10s infinite alternate ease-in-out;
         }
         .blob-1 {
-            width: 300px;
-            height: 300px;
+            width: 350px; height: 350px;
             background: var(--blob-1);
-            top: -10%;
-            left: -10%;
+            top: -10%; left: -10%;
             border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
         }
         .blob-2 {
-            width: 250px;
-            height: 250px;
+            width: 300px; height: 300px;
             background: var(--blob-2);
-            bottom: -10%;
-            right: -10%;
+            bottom: -10%; right: -10%;
             border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
             animation-delay: -5s;
         }
@@ -90,39 +132,33 @@
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 2.5rem 2rem;
-            width: 90%;
-            max-width: 380px;
+            width: 90%; max-width: 380px;
             z-index: 1;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            display: flex; flex-direction: column; gap: 1.5rem;
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Profile Header */
-        .header {
-            text-align: center;
-        }
-        .avatar {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, var(--blob-1), var(--blob-2));
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            color: white;
-            font-weight: 700;
+        /* Profile Header & Image Placeholder */
+        .header { text-align: center; }
+        .avatar-container {
+            width: 100px; height: 100px;
             margin: 0 auto 1rem;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, var(--blob-1), var(--blob-2));
             box-shadow: 0 10px 20px var(--btn-shadow);
-            border: 3px solid var(--glass-border);
+        }
+        .avatar-img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--bg-color);
         }
         h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.5px; }
         .title { color: var(--blob-1); font-weight: 500; font-size: 0.95rem; margin-top: 0.2rem; }
@@ -130,87 +166,59 @@
         /* Details Section */
         .details {
             background: rgba(0, 0, 0, 0.05);
-            border-radius: 16px;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
+            border-radius: 16px; padding: 1rem;
+            display: flex; flex-direction: column; gap: 0.8rem;
         }
-        @media (prefers-color-scheme: dark) {
-            .details { background: rgba(255, 255, 255, 0.05); }
-        }
+        [data-theme="dark"] .details { background: rgba(255, 255, 255, 0.05); }
+        
         .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            text-decoration: none;
+            display: flex; align-items: center; gap: 0.8rem;
+            font-size: 0.9rem; color: var(--text-sub); text-decoration: none;
+            transition: color 0.3s;
         }
+        .detail-item:hover { color: var(--blob-1); }
         .detail-item i {
-            font-style: normal;
-            font-size: 1.1rem;
-            background: var(--glass-bg);
-            padding: 8px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
+            font-style: normal; font-size: 1.1rem;
+            background: var(--glass-bg); padding: 8px;
+            border-radius: 10px; border: 1px solid var(--glass-border);
         }
 
-        /* 3D Liquid Buttons */
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .btn {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            width: 100%;
-            padding: 14px;
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
-            background: var(--glass-bg);
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            text-decoration: none;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 
-                inset 2px 2px 4px var(--btn-highlight),
-                inset -2px -2px 4px var(--btn-shadow),
-                0 4px 10px rgba(0,0,0,0.1);
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                inset 2px 2px 4px var(--btn-highlight),
-                inset -2px -2px 4px var(--btn-shadow),
-                0 8px 15px rgba(0,0,0,0.15);
-        }
-        .btn:active {
-            transform: translateY(1px);
-            box-shadow: 
-                inset 1px 1px 2px var(--btn-highlight),
-                inset -1px -1px 2px var(--btn-shadow),
-                0 2px 5px rgba(0,0,0,0.1);
-        }
+        /* 3D Liquid Buttons with Swipe Effect */
+        .actions { display: flex; flex-direction: column; gap: 1rem; }
         
-        /* Specific Button Accents */
-        .btn-whatsapp {
-            color: #25D366;
-            border-color: rgba(37, 211, 102, 0.3);
+        .btn {
+            position: relative; display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+            width: 100%; padding: 14px; border-radius: 16px;
+            border: 1px solid var(--glass-border); background: var(--glass-bg);
+            color: var(--text-main); font-weight: 600; font-size: 1rem;
+            text-decoration: none; overflow: hidden; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: inset 2px 2px 4px var(--btn-highlight), inset -2px -2px 4px var(--btn-shadow), 0 4px 10px rgba(0,0,0,0.1);
         }
-        @media (prefers-color-scheme: dark) {
-            .btn-whatsapp { color: #4ade80; }
+
+        /* The Shiny Swipe Animation */
+        .btn::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0));
+            transform: skewX(-25deg); transition: 0.5s ease;
         }
+
+        .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: inset 2px 2px 4px var(--btn-highlight), inset -2px -2px 4px var(--btn-shadow), 0 12px 20px rgba(0,0,0,0.15);
+        }
+        .btn:hover::after { left: 150%; } /* Triggers the swipe */
+        
+        .btn:active { transform: translateY(1px) scale(0.98); }
+        
+        .btn-whatsapp { color: #25D366; border-color: rgba(37, 211, 102, 0.3); }
+        [data-theme="dark"] .btn-whatsapp { color: #4ade80; }
     </style>
 </head>
 <body>
+
+    <div class="custom-cursor" id="cursor"></div>
+
+    <div class="theme-toggle" id="themeBtn" onclick="toggleTheme()">☀️</div>
 
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
@@ -218,16 +226,18 @@
     <div class="glass-card">
         
         <div class="header">
-            <div class="avatar">BJ</div>
+            <div class="avatar-container">
+                <img src="https://via.placeholder.com/150" alt="Bhavya Jain" class="avatar-img">
+            </div>
             <h1>Bhavya Jain</h1>
             <p class="title">Software Developer Specialist</p>
         </div>
 
         <div class="details">
-            <a href="mailto:threegamerbpiz@gmail.com" class="detail-item">
-                <i>📧</i> threegamerbpiz@gmail.com
+            <a href="mailto:threegamerboiz@gmail.com" class="detail-item hoverable">
+                <i>📧</i> threegamerboiz@gmail.com
             </a>
-            <a href="tel:+917454990121" class="detail-item">
+            <a href="tel:+917454990121" class="detail-item hoverable">
                 <i>📱</i> +91 74549 90121
             </a>
             <div class="detail-item">
@@ -236,11 +246,10 @@
         </div>
 
         <div class="actions">
-            <button class="btn btn-save" onclick="saveContact()">
+            <button class="btn btn-save hoverable" onclick="saveContact()">
                 <span>💾</span> Save to Contacts
             </button>
-
-            <a href="https://wa.me/917454990121" class="btn btn-whatsapp" target="_blank">
+            <a href="https://wa.me/917454990121" class="btn btn-whatsapp hoverable" target="_blank">
                 <span>💬</span> Message on WhatsApp
             </a>
         </div>
@@ -248,6 +257,42 @@
     </div>
 
     <script>
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        const hoverables = document.querySelectorAll('.hoverable, .theme-toggle, .btn');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Expand cursor when hovering over buttons/links
+        hoverables.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+        });
+
+        // Theme Toggle (Torch) Logic
+        function toggleTheme() {
+            const body = document.body;
+            const themeBtn = document.getElementById('themeBtn');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeBtn.textContent = '☀️'; // Switch to light mode icon
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeBtn.textContent = '🌙'; // Switch to dark mode icon
+            }
+        }
+
+        // Set initial theme based on system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('themeBtn').textContent = '🌙';
+        }
+
+        // Save Contact Logic (Updated Email)
         function saveContact() {
             const vcardData = `BEGIN:VCARD
 VERSION:3.0
@@ -255,7 +300,7 @@ FN:Bhavya Jain Developer
 N:Jain;Bhavya;;Developer;
 ORG:Software Developer Specialist
 TEL;TYPE=CELL:+917454990121
-EMAIL;TYPE=INTERNET:threegamerbpiz@gmail.com
+EMAIL;TYPE=INTERNET:threegamerboiz@gmail.com
 ADR;TYPE=HOME:;;Meerut;Uttar Pradesh;;India
 END:VCARD`;
 
