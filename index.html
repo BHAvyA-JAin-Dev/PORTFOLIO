@@ -5,53 +5,246 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bhavya Jain | Developer</title>
     <style>
+        /* CSS Variables for Dynamic Light/Dark Mode */
         :root {
-            --primary: #007bff;
-            --whatsapp: #25D366;
-            --dark: #2d3436;
+            --bg-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-sub: #475569;
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --blob-1: #3b82f6;
+            --blob-2: #10b981;
+            --btn-shadow: rgba(0, 0, 0, 0.1);
+            --btn-highlight: rgba(255, 255, 255, 0.8);
         }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; background-color: #f8f9fa; margin: 0; 
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0f172a;
+                --text-main: #f8fafc;
+                --text-sub: #94a3b8;
+                --glass-bg: rgba(30, 41, 59, 0.4);
+                --glass-border: rgba(255, 255, 255, 0.1);
+                --blob-1: #6366f1;
+                --blob-2: #8b5cf6;
+                --btn-shadow: rgba(0, 0, 0, 0.4);
+                --btn-highlight: rgba(255, 255, 255, 0.1);
+            }
         }
-        .card { 
-            background: white; padding: 2.5rem; border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; 
-            width: 90%; max-width: 350px;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-        .profile-img {
-            width: 80px; height: 80px; background: var(--primary);
-            color: white; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: bold; margin: 0 auto 1rem;
+
+        body {
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            color: var(--text-main);
+            transition: background-color 0.5s ease;
         }
-        h1 { color: var(--dark); margin: 0; font-size: 1.5rem; }
-        p { color: #636e72; margin: 0.5rem 0 1.5rem; font-size: 0.9rem; }
+
+        /* Liquid Animated Background Blobs */
+        .blob {
+            position: absolute;
+            filter: blur(60px);
+            z-index: 0;
+            opacity: 0.6;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--blob-1);
+            top: -10%;
+            left: -10%;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        }
+        .blob-2 {
+            width: 250px;
+            height: 250px;
+            background: var(--blob-2);
+            bottom: -10%;
+            right: -10%;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            100% { transform: translate(30px, 50px) rotate(20deg) scale(1.1); }
+        }
+
+        /* Glassmorphism Card Container */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            width: 90%;
+            max-width: 380px;
+            z-index: 1;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Profile Header */
+        .header {
+            text-align: center;
+        }
+        .avatar {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--blob-1), var(--blob-2));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 20px var(--btn-shadow);
+            border: 3px solid var(--glass-border);
+        }
+        h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.5px; }
+        .title { color: var(--blob-1); font-weight: 500; font-size: 0.95rem; margin-top: 0.2rem; }
+
+        /* Details Section */
+        .details {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        @media (prefers-color-scheme: dark) {
+            .details { background: rgba(255, 255, 255, 0.05); }
+        }
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            text-decoration: none;
+        }
+        .detail-item i {
+            font-style: normal;
+            font-size: 1.1rem;
+            background: var(--glass-bg);
+            padding: 8px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* 3D Liquid Buttons */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .btn {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 
+                inset 2px 2px 4px var(--btn-highlight),
+                inset -2px -2px 4px var(--btn-shadow),
+                0 4px 10px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 2px 2px 4px var(--btn-highlight),
+                inset -2px -2px 4px var(--btn-shadow),
+                0 8px 15px rgba(0,0,0,0.15);
+        }
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 
+                inset 1px 1px 2px var(--btn-highlight),
+                inset -1px -1px 2px var(--btn-shadow),
+                0 2px 5px rgba(0,0,0,0.1);
+        }
         
-        .btn { 
-            display: flex; align-items: center; justify-content: center;
-            padding: 12px; margin-bottom: 10px; border-radius: 10px;
-            text-decoration: none; font-weight: 600; transition: 0.2s;
-            cursor: pointer; border: none; width: 100%; font-size: 1rem;
+        /* Specific Button Accents */
+        .btn-whatsapp {
+            color: #25D366;
+            border-color: rgba(37, 211, 102, 0.3);
         }
-        .btn-save { background: var(--primary); color: white; }
-        .btn-whatsapp { background: var(--whatsapp); color: white; }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        @media (prefers-color-scheme: dark) {
+            .btn-whatsapp { color: #4ade80; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="profile-img">BJ</div>
-        <h1>Bhavya Jain</h1>
-        <p>Software Developer Specialist</p>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
 
-        <button class="btn btn-save" onclick="saveContact()">💾 Save Contact</button>
+    <div class="glass-card">
+        
+        <div class="header">
+            <div class="avatar">BJ</div>
+            <h1>Bhavya Jain</h1>
+            <p class="title">Software Developer Specialist</p>
+        </div>
 
-        <a href="https://wa.me/917454990121" class="btn btn-whatsapp" target="_blank">
-            💬 WhatsApp Me
-        </a>
+        <div class="details">
+            <a href="mailto:threegamerbpiz@gmail.com" class="detail-item">
+                <i>📧</i> threegamerbpiz@gmail.com
+            </a>
+            <a href="tel:+917454990121" class="detail-item">
+                <i>📱</i> +91 74549 90121
+            </a>
+            <div class="detail-item">
+                <i>📍</i> Meerut, Uttar Pradesh, India
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-save" onclick="saveContact()">
+                <span>💾</span> Save to Contacts
+            </button>
+
+            <a href="https://wa.me/917454990121" class="btn btn-whatsapp" target="_blank">
+                <span>💬</span> Message on WhatsApp
+            </a>
+        </div>
+
     </div>
 
     <script>
@@ -60,21 +253,20 @@
 VERSION:3.0
 FN:Bhavya Jain Developer
 N:Jain;Bhavya;;Developer;
-ORG:Developer
+ORG:Software Developer Specialist
 TEL;TYPE=CELL:+917454990121
 EMAIL;TYPE=INTERNET:threegamerbpiz@gmail.com
+ADR;TYPE=HOME:;;Meerut;Uttar Pradesh;;India
 END:VCARD`;
 
-            // Check if mobile sharing is supported (for native contact adding)
             if (navigator.share) {
                 const file = new File([vcardData], "BhavyaJain.vcf", { type: "text/vcard" });
                 navigator.share({
                     files: [file],
                     title: 'Bhavya Jain Developer',
                     text: 'Save my contact info'
-                }).catch(console.error);
+                }).catch((error) => console.log('Sharing failed', error));
             } else {
-                // Fallback: Download the file
                 const blob = new Blob([vcardData], { type: "text/vcard" });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
